@@ -28,7 +28,7 @@ def take_screenshot():
         
         print(f"Navigating to website...")
         # REPLACE THE URL BELOW
-        page.goto("https://example.com") 
+        page.goto("https://globalsumudflotilla.org/tracker/") 
         
         print("Waiting 30 seconds for content to load...")
         page.wait_for_timeout(30000)
