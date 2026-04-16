@@ -18,7 +18,7 @@ def take_screenshot():
         stealth_sync(page)
         
         print("Loading website...")
-        page.goto("https://example.com") # REMEMBER TO CHANGE THIS
+        page.goto("https://globalsumudflotilla.org/tracker/") # REMEMBER TO CHANGE THIS
         
         print("Waiting 30 seconds...")
         page.wait_for_timeout(30000)
