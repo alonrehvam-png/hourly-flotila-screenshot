@@ -1,41 +1,39 @@
-name: Hourly Screenshot Bot
+name: Flotilla Professional Capture
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *' 
-  workflow_dispatch: 
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    - cron: '0 * * * *'
 
 jobs:
-  take-and-save-screenshot:
+  screenshot:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write # Allows the bot to save images to your repo
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - name: Create Output Folder
+        run: mkdir -p output
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install playwright
-        playwright install chromium
+      - name: Fetch Screenshot from API
+        run: |
+          # Generate the filename with current date and time
+          FILENAME="output/flotilla_$(date +'%Y-%m-%d_%H-%M').png"
+          
+          # API Parameters:
+          # viewport_width/height=3840x2160 -> This creates the "Zoom Out" effect
+          # delay=60000 -> 1 minute wait for map data
+          # wait_for_network_idle=true -> Ensures all data is downloaded
+          
+          curl -L "https://api.screenshotone.com/take?access_key=30850cce6fd2bf30464d&url=https://flotilla.forensic-architecture.org/tracker/&viewport_width=3840&viewport_height=2160&delay=60000&wait_for_network_idle=true&block_cookie_banners=true&format=png" -o "$FILENAME"
 
-    - name: Run the Python script
-      run: python screenshot.py
-
-    - name: Commit and save the new screenshot
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add output/
-        git commit -m "Added screenshot for $(date)" || echo "No changes to commit"
-        git push
+      - name: Save to Repository
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add output/
+          git commit -m "Capture: $(date)" || echo "No changes"
+          git push
