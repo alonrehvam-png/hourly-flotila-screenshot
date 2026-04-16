@@ -26,17 +26,16 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install playwright playwright-stealth
+        pip install playwright
         playwright install chromium
 
     - name: Run the Python script
       run: python screenshot.py
 
-    - name: Commit and save all screenshots in the output folder
+    - name: Commit and save the new screenshot
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        # This tells Git to track everything inside the output folder
         git add output/
-        git commit -m "Automated hourly screenshot: $(date)" || echo "No changes to commit"
+        git commit -m "Added screenshot for $(date)" || echo "No changes to commit"
         git push
