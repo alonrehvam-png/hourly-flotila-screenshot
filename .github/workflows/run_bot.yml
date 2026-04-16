@@ -5,7 +5,6 @@ on:
     - cron: '0 * * * *' 
   workflow_dispatch: 
 
-# This environment variable silences the Node.js 20 warning
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -33,10 +32,11 @@ jobs:
     - name: Run the Python script
       run: python screenshot.py
 
-    - name: Commit and save the image to GitHub
+    - name: Commit and save all screenshots in the output folder
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add screenshot.png
-        git commit -m "Automated hourly screenshot" || echo "No changes to commit"
+        # This tells Git to track everything inside the output folder
+        git add output/
+        git commit -m "Automated hourly screenshot: $(date)" || echo "No changes to commit"
         git push
